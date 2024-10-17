@@ -1368,6 +1368,8 @@ GameObject:
   m_Component:
   - component: {fileID: 893822576}
   - component: {fileID: 893822575}
+  - component: {fileID: 893822577}
+  - component: {fileID: 893822578}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1387,6 +1389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2a8b1ad3722dd247abf5f523e3ae436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LevelManager: {fileID: 893822577}
   MainTileMap: {fileID: 699146015}
 --- !u!4 &893822576
 Transform:
@@ -1403,6 +1406,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &893822577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893822574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a626005c1e854d498e929dc872c9e49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LevelBounds:
+    m_Position: {x: 0, y: 0, z: 0}
+    m_Size: {x: 10, y: 10, z: 0}
+  MainTilemap: {fileID: 699146015}
+  UnderTilemap: {fileID: 1388926736}
+  BaseTile: {fileID: 11400000, guid: 35d2dc87af3f93d4d8dfa90e7ec5d7d8, type: 2}
+  MineAmount: 0.3
+  MineSpawnChance: 0.05
+--- !u!114 &893822578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893822574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d6deaae19d9eed45b69f8904033645c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1243455723
 GameObject:
   m_ObjectHideFlags: 0
