@@ -1,12 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private LevelManager LevelManager;
+
+    [Space]
     [SerializeField] private Tilemap MainTileMap;
 
     void Update()

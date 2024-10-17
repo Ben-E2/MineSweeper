@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MineSweeperNum1
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: -1674347706, guid: db9d383dadb9d004985e7271e18027ce, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.019607844, g: 0.019607844, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0
