@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class LevelGenerator : MonoBehaviour
 {
     [SerializeField] private LevelManager LevelManager;
+    [SerializeField] private GameManager GameManager;
 
     [Space]
     [SerializeField] private Tilemap MainTilemap;
@@ -24,69 +26,67 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private TileBase Num7TileBase;
     [SerializeField] private TileBase Num8TileBase;
 
-    private void Start()
+    public IEnumerator CreateLevel()
     {
-        Debug.Log("Starting.");
-        CreateLevel();
-    }
+        yield return StartCoroutine("CreateGridData");
 
-    public void CreateLevel()
-    {
-        Debug.Log("Creating Level");
+        yield return StartCoroutine("PlaceMines");
 
-        CreateGridData();
+        yield return StartCoroutine("DrawUnderLayer");
 
-        PlaceMines();
-
-        DrawUnderLayer();
-
-        DrawMainLayer();
+        yield return StartCoroutine("DrawMainLayer");
     }
 
     // Initialises the GridData Dictionary with all of the cells.
-    private void CreateGridData()
+    private IEnumerator CreateGridData()
     {
+        LevelManager.GridData = new Dictionary<Vector3Int, TileData>();
+
         for (int x = 0; x < LevelManager.LevelBounds.size.x; x++)
         {
             for (int y = 0; y < LevelManager.LevelBounds.size.y; y++)
             {
-                LevelManager.GridData[new Vector3Int(x, y, 0)] = new TileData(false, false, false);
+                LevelManager.GridData[new Vector3Int(x, y, 0)] = new TileData(false, 0, false, false);
             }
         }
+
+        yield return null;
     }
 
-    private void PlaceMines()
+    private IEnumerator PlaceMines()
     {
-        int _placedMines = 0;
-        Debug.Log("Starting PlaceMines()");
+        int _levelArea = LevelManager.LevelBounds.size.x * LevelManager.LevelBounds.size.y;
+        int _maxMines = (int)(_levelArea * LevelManager.MaxMinePercentage);
 
-        while (_placedMines < LevelManager.MineAmount)
+        int _placedMines = 0;
+        while (_placedMines < _maxMines)
         {
             for (int x = 0; x < LevelManager.LevelBounds.size.x; x++)
             {
                 for (int y = 0; y < LevelManager.LevelBounds.size.y; y++)
                 {
-                    if (_placedMines >= LevelManager.MineAmount)
-                    {
-                        Debug.Log("Max mines already placed.");
-                        return;
-                    }
+                    if (_placedMines >= _maxMines) { continue; }
 
                     float _placeMineRNG = Random.Range(0f, 1f);
                     if (_placeMineRNG <= LevelManager.MineSpawnChance)
                     {
-                        LevelManager.GridData[new Vector3Int(x, y, 0)] = new TileData(true, false, false);
+                        LevelManager.GridData[new Vector3Int(x, y, 0)] = new TileData(true, 0, false, false);
 
                         _placedMines++;
                     }
                 }
             }
         }
+
+        GameManager.RemainingFlags = _placedMines;
+        GameManager.AmountOfMines = _placedMines;
+
+        yield return null;
+        
     }
 
     private void DrawMines()
     {
-        Debug.Log("Starting DrawMines()");
         foreach (KeyValuePair<Vector3Int, TileData> tile in LevelManager.GridData)
         {
             Vector3Int _key = tile.Key;
@@ -101,8 +101,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void DrawUnderLayer()
     {
-        Debug.Log("Starting DrawUnderLayer()");
-
         // Do this prior to drawing the numbered tiles.
         DrawMines();
 
@@ -118,7 +116,6 @@ public class LevelGenerator : MonoBehaviour
             }
 
             int _surroundingMines = CalculateSurroundingMines(_key);
-            Debug.Log($"({_key.x}, {_key.y} | {_surroundingMines})");
             switch (_surroundingMines)
             {
                 case 1:
@@ -192,6 +189,8 @@ public class LevelGenerator : MonoBehaviour
                 _surroundingMines++;
             }
         }
+
+        LevelManager.GridData[tilePosition].surroundingMines = _surroundingMines;
 
         return _surroundingMines;
     }

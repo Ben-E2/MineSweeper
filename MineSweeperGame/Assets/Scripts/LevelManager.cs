@@ -6,12 +6,14 @@ using UnityEngine.Tilemaps;
 public class TileData
 {
     public bool isMine;
+    public int surroundingMines;
     public bool isRevealed;
     public bool isFlagged;
 
-    public TileData(bool isMine, bool isRevealed, bool isFlagged)
+    public TileData(bool isMine, int surroundingMines, bool isRevealed, bool isFlagged)
     {
         this.isMine = isMine;
+        this.surroundingMines = surroundingMines;
         this.isRevealed = isRevealed;
         this.isFlagged = isFlagged;
     }
@@ -22,12 +24,15 @@ public class LevelManager : MonoBehaviour
     #region Variables
 
     [SerializeField] private LevelGenerator LevelGenerator;
+    [SerializeField] private GameManager GameManager;
 
     [Space]
+    [SerializeField] private Tilemap FlagTilemap;
     [SerializeField] private Tilemap MainTilemap;
     [SerializeField] private Tilemap UnderTilemap;
 
     [Space]
+    [SerializeField] private TileBase FlagTile;
     [SerializeField] private TileBase CoverTile;
 
     [Space]
@@ -35,34 +40,58 @@ public class LevelManager : MonoBehaviour
     public Dictionary<Vector3Int, TileData> GridData  = new Dictionary<Vector3Int, TileData>();
 
     [Space]
-    [Range(0, 500)] public float MineAmount;
-    [Range(0.1f, 0.9f)] [SerializeField] private float MaxMinePercent;
-    [Range(0.01f, 0.1f)] public float MineSpawnChance = 0.05f;
+    [Range(0.1f, 0.9f)] public float MaxMinePercentage;
+    [Range(0.01f, 0.1f)] public float MineSpawnChance;
 
     #endregion
 
-    void Start()
+    public void CreateNewLevel()
     {
-        LevelBounds.size = new Vector3Int(10, 10, 1);
+        // Will also clear score and other data when implemented.
 
-        ValidateMineAmount();
+        StartCoroutine(LevelGenerator.CreateLevel());
     }
 
-    public void OnTileClick(Vector3Int clickPosition)
+    public void OnTileM1Click(Vector3Int clickPosition)
     {
+        if (GridData[clickPosition].isMine)
+        {
+            Debug.LogWarning("Game over.");
+
+            GameManager.CurrentGameState = GameState.GameLost;
+        }
+        else if (GridData[clickPosition].isFlagged)
+        {
+            Debug.LogWarning("Can't click, tile is flagged.");
+
+            return;
+        }
+
         if (MainTilemap.ContainsTile(CoverTile)) 
         {
+            GridData[clickPosition].isRevealed = true;
+
             MainTilemap.SetTile(clickPosition, null);
         } 
     }
 
-    public void ValidateMineAmount()
+    public void OnTileM2Click(Vector3Int clickPosition)
     {
-        int _playArea = LevelBounds.size.x * LevelBounds.size.y;
-
-        if (MineAmount > _playArea * MaxMinePercent)
+        if (GridData[clickPosition].isFlagged)
         {
-            MineAmount = _playArea * MaxMinePercent;
+            GameManager.ChangeFlagAmount(1);
+
+            GridData[clickPosition].isFlagged = false;
+
+            FlagTilemap.SetTile(clickPosition, null);
+        }
+        else if (!GridData[clickPosition].isFlagged && GameManager.RemainingFlags > 0)
+        {
+            GameManager.ChangeFlagAmount(-1);
+
+            GridData[clickPosition].isFlagged = true;
+
+            FlagTilemap.SetTile(clickPosition, FlagTile);
         }
     }
 

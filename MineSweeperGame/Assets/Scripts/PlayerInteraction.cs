@@ -16,8 +16,17 @@ public class PlayerInteraction : MonoBehaviour
 
             if (CheckTileIsValid(_mapPosition)) 
             {
-                Debug.Log(_mapPosition);
-                LevelManager.OnTileClick(_mapPosition);
+                LevelManager.OnTileM1Click(_mapPosition);
+            }
+        }
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            Vector3Int _mapPosition = GetHoveredTile();
+
+            if (CheckTileIsValid(_mapPosition))
+            {
+                LevelManager.OnTileM2Click(_mapPosition);
             }
         }
     }
@@ -33,6 +42,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private bool CheckTileIsValid(Vector3Int mapPosition)
     {
-        return LevelManager.LevelBounds.Contains(mapPosition);
+        return LevelManager.GridData.ContainsKey(mapPosition);
     }
 }
