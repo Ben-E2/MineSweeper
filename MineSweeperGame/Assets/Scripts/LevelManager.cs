@@ -54,24 +54,28 @@ public class LevelManager : MonoBehaviour
 
     public void OnTileM1Click(Vector3Int clickPosition)
     {
-        if (GridData[clickPosition].isMine)
-        {
-            Debug.LogWarning("Game over.");
-
-            GameManager.CurrentGameState = GameState.GameLost;
-        }
-        else if (GridData[clickPosition].isFlagged)
+        if (GridData[clickPosition].isFlagged)
         {
             Debug.LogWarning("Can't click, tile is flagged.");
 
             return;
         }
+        else if(GridData[clickPosition].isMine)
+        {
+            Debug.LogWarning("Game over.");
 
-        if (MainTilemap.ContainsTile(CoverTile)) 
+            GameManager.CurrentGameState = GameState.GameLost;
+        }
+
+        if (GridData[clickPosition].isRevealed == false)
         {
             GridData[clickPosition].isRevealed = true;
 
+            GameManager.RemainingTiles -= 1;
+
             MainTilemap.SetTile(clickPosition, null);
+
+            GameManager.CheckIfGameWon();
         } 
     }
 

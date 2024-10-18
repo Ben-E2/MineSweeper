@@ -38,6 +38,8 @@ public class LevelGenerator : MonoBehaviour
         yield return StartCoroutine("DrawMainLayer");
 
         yield return StartCoroutine("DrawUnderLayer");
+
+        GameManager.RemainingTiles = LevelManager.LevelBounds.size.x * LevelManager.LevelBounds.size.y;
     }
 
     // Initialises the GridData Dictionary with all of the cells.

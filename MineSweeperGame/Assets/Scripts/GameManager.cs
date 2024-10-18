@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     public int RemainingFlags;
     public int AmountOfMines;
+    public int RemainingTiles;
 
     void Update()
     {
@@ -40,5 +41,15 @@ public class GameManager : MonoBehaviour
     public void ChangeFlagAmount(int change)
     {
         RemainingFlags += change;
+    }
+
+    public void CheckIfGameWon()
+    {
+        if (RemainingTiles <= AmountOfMines)
+        {
+            Debug.LogWarning($"You Win. RT: {RemainingTiles} M#: {AmountOfMines}");
+
+            CurrentGameState = GameState.GameWon;
+        }
     }
 }
