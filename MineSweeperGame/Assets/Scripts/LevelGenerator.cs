@@ -9,6 +9,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameManager GameManager;
 
     [Space]
+    [SerializeField] private Tilemap FlagTilemap;
     [SerializeField] private Tilemap MainTilemap;
     [SerializeField] private Tilemap UnderTilemap;
 
@@ -28,13 +29,15 @@ public class LevelGenerator : MonoBehaviour
 
     public IEnumerator CreateLevel()
     {
+        yield return StartCoroutine("ClearTilemaps");
+
         yield return StartCoroutine("CreateGridData");
 
         yield return StartCoroutine("PlaceMines");
 
-        yield return StartCoroutine("DrawUnderLayer");
-
         yield return StartCoroutine("DrawMainLayer");
+
+        yield return StartCoroutine("DrawUnderLayer");
     }
 
     // Initialises the GridData Dictionary with all of the cells.
@@ -101,7 +104,6 @@ public class LevelGenerator : MonoBehaviour
 
     private void DrawUnderLayer()
     {
-        // Do this prior to drawing the numbered tiles.
         DrawMines();
 
         foreach (KeyValuePair<Vector3Int, TileData> tile in LevelManager.GridData)
@@ -161,6 +163,17 @@ public class LevelGenerator : MonoBehaviour
 
             MainTilemap.SetTile(_key, CoverTileBase);
         }
+    }
+
+    private IEnumerator ClearTilemaps()
+    {
+        FlagTilemap.ClearAllTiles();
+
+        MainTilemap.ClearAllTiles();
+
+        UnderTilemap.ClearAllTiles();
+
+        yield return null;
     }
 
     private int CalculateSurroundingMines(Vector3Int tilePosition)

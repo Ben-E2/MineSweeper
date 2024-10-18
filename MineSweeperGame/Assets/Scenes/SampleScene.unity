@@ -446,6 +446,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelManager: {fileID: 893822577}
   GameManager: {fileID: 893822580}
+  FlagTilemap: {fileID: 2138836906}
   MainTilemap: {fileID: 699146015}
   UnderTilemap: {fileID: 1388926736}
   CoverTileBase: {fileID: 11400000, guid: 35d2dc87af3f93d4d8dfa90e7ec5d7d8, type: 2}
