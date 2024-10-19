@@ -42,6 +42,7 @@ public class LevelManager : MonoBehaviour
     #region Level Information
     [Space]
     public BoundsInt LevelBounds;
+    [HideInInspector] public int LevelArea;
     public Dictionary<Vector3Int, TileData> GridData  = new Dictionary<Vector3Int, TileData>();
 
     [Space]
@@ -56,6 +57,8 @@ public class LevelManager : MonoBehaviour
         // Will also clear score and other data when implemented.
 
         StartCoroutine(LevelGenerator.CreateLevel());
+
+        LevelArea = LevelBounds.size.x * LevelBounds.size.y;
     }
 
     public void OnTileM1Click(Vector3Int clickPosition)

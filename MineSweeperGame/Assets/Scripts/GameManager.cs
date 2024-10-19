@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum GameState {
     Playing,
+    NotPlaying,
     GameLost,
     GameWon
 }
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
 {
     #region Variables
     [SerializeField] private LevelManager LevelManager;
+    [SerializeField] private UIManager UIManager;
 
     #region Game State Variables
     public GameState CurrentGameState;
@@ -32,17 +34,17 @@ public class GameManager : MonoBehaviour
         {
             // Display a game over screen first. Not implemented yet
 
-            LevelManager.CreateNewLevel();
+            CurrentGameState = GameState.NotPlaying;
 
-            CurrentGameState = GameState.Playing;
+            DisplayGameSummary(false, 0);
         }
         else if (CurrentGameState == GameState.GameWon)
         {
             // Display a game won screen first. Not implemented yet
 
-            LevelManager.CreateNewLevel();
+            CurrentGameState = GameState.NotPlaying;
 
-            CurrentGameState = GameState.Playing;
+            DisplayGameSummary(true, 0);
         }
     }
 
@@ -59,5 +61,10 @@ public class GameManager : MonoBehaviour
 
             CurrentGameState = GameState.GameWon;
         }
+    }
+
+    public void DisplayGameSummary(bool win, float time)
+    {
+        UIManager.UpdateGameSummaryWindow(win, time, AmountOfMines, true);
     }
 }

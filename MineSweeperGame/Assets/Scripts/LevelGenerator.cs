@@ -46,7 +46,7 @@ public class LevelGenerator : MonoBehaviour
 
         yield return StartCoroutine("DrawUnderLayer");
 
-        GameManager.RemainingTiles = LevelManager.LevelBounds.size.x * LevelManager.LevelBounds.size.y;
+        GameManager.RemainingTiles = LevelManager.LevelArea;
     }
 
     // Initialises the GridData Dictionary with all of the cells.
@@ -67,7 +67,7 @@ public class LevelGenerator : MonoBehaviour
 
     private IEnumerator PlaceMines()
     {
-        int _levelArea = LevelManager.LevelBounds.size.x * LevelManager.LevelBounds.size.y;
+        int _levelArea = LevelManager.LevelArea;
         int _maxMines = (int)(_levelArea * LevelManager.MaxMinePercentage);
 
         int _placedMines = 0;
