@@ -5,6 +5,8 @@ public class PlayerInteraction : MonoBehaviour
 {
     #region Variables
     [SerializeField] private LevelManager LevelManager;
+    [SerializeField] private GameManager GameManager;
+    [SerializeField] private UIManager UIManager;
 
     #region Tilemaps
     [Space]
@@ -15,17 +17,29 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonUp(0)) 
+        LeftClickCheck();
+
+        RightClickCheck();
+
+        EscapeClickedCheck();
+    }
+
+    private void LeftClickCheck()
+    {
+        if (Input.GetMouseButtonUp(0) && GameManager.CurrentGameState == GameState.Playing)
         {
             Vector3Int _mapPosition = GetHoveredTile();
 
-            if (CheckTileIsValid(_mapPosition)) 
+            if (CheckTileIsValid(_mapPosition))
             {
                 LevelManager.OnTileM1Click(_mapPosition);
             }
         }
+    }
 
-        if (Input.GetMouseButtonUp(1))
+    private void RightClickCheck()
+    {
+        if (Input.GetMouseButtonUp(1) && GameManager.CurrentGameState == GameState.Playing)
         {
             Vector3Int _mapPosition = GetHoveredTile();
 
@@ -33,6 +47,22 @@ public class PlayerInteraction : MonoBehaviour
             {
                 LevelManager.OnTileM2Click(_mapPosition);
             }
+        }
+    }
+
+    private void EscapeClickedCheck()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape) && GameManager.OnGoingGame && UIManager.MenuWindow.activeSelf == false)
+        {
+            if (UIManager.MenuWindow.activeSelf == false)
+            {
+                UIManager.EnableMenuWindow(true);
+            }
+
+            else
+            {
+                UIManager.EnableMenuWindow(false);
+            } 
         }
     }
 

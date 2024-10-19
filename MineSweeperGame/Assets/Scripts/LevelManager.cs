@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -36,6 +37,7 @@ public class LevelManager : MonoBehaviour
     #region Tile Assets
     [Space]
     [SerializeField] private TileBase FlagTile;
+    [SerializeField] private TileBase MineTile;
     [SerializeField] private TileBase CoverTile;
     #endregion
 
@@ -56,9 +58,13 @@ public class LevelManager : MonoBehaviour
     {
         // Will also clear score and other data when implemented.
 
+        GameManager.OnGoingGame = true;
+
         StartCoroutine(LevelGenerator.CreateLevel());
 
         LevelArea = LevelBounds.size.x * LevelBounds.size.y;
+
+        GameManager.TimeTaken = 0f;
     }
 
     public void OnTileM1Click(Vector3Int clickPosition)
@@ -71,8 +77,6 @@ public class LevelManager : MonoBehaviour
         }
         else if(GridData[clickPosition].isMine)
         {
-            Debug.LogWarning("Game over.");
-
             GameManager.CurrentGameState = GameState.GameLost;
 
             return;
@@ -174,6 +178,17 @@ public class LevelManager : MonoBehaviour
         MainTilemap.SetTile(tile, null);
 
         FlagTilemap.SetTile(tile, null);
+    }
+
+    public IEnumerator ShowMinePosition()
+    {
+        Vector3Int _currentMine = GameManager.MinesToReveal[0];
+
+        FlagTilemap.SetTile(_currentMine, MineTile);
+
+        GameManager.MinesToReveal.Remove(_currentMine);
+
+        yield return new WaitForSeconds(0.2f);
     }
 
     private void OnDrawGizmos()

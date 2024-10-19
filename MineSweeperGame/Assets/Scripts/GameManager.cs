@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameState {
@@ -15,15 +17,20 @@ public class GameManager : MonoBehaviour
 
     #region Game State Variables
     public GameState CurrentGameState;
+    public bool OnGoingGame = false;
 
     [Space]
     public int RemainingFlags;
 
     [Space]
     public int AmountOfMines;
+    public List<Vector3Int> MinesToReveal;
 
     [Space]
     public int RemainingTiles;
+
+    [Space]
+    public float TimeTaken;
     #endregion
 
     #endregion
@@ -32,19 +39,15 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentGameState == GameState.GameLost) 
         {
-            // Display a game over screen first. Not implemented yet
-
             CurrentGameState = GameState.NotPlaying;
 
-            DisplayGameSummary(false, 0);
+            StartCoroutine(OnGameLost());
         }
         else if (CurrentGameState == GameState.GameWon)
         {
-            // Display a game won screen first. Not implemented yet
-
             CurrentGameState = GameState.NotPlaying;
 
-            DisplayGameSummary(true, 0);
+            StartCoroutine(OnGameWon());
         }
     }
 
@@ -63,8 +66,48 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void DisplayGameSummary(bool win, float time)
+    private IEnumerator OnGameLost()
     {
-        UIManager.UpdateGameSummaryWindow(win, time, AmountOfMines, true);
+        MinesToReveal = new List<Vector3Int>();
+
+        foreach (KeyValuePair<Vector3Int, TileData> tile in LevelManager.GridData)
+        {
+            Vector3Int _key = tile.Key;
+            TileData _value = tile.Value;
+
+            if (_value.isMine && !_value.isRevealed)
+            {
+                MinesToReveal.Add(_key);
+            }
+        }
+
+        while (MinesToReveal.Count > 0)
+        {
+            yield return StartCoroutine(LevelManager.ShowMinePosition());
+        }
+
+        OnGoingGame = false;
+
+        yield return StartCoroutine(WaitForSeconds(1.5f));
+
+        UIManager.UpdateGameSummaryWindow(false, TimeTaken, AmountOfMines, true);
+
+        yield return null;
+    }
+
+    private IEnumerator OnGameWon()
+    {
+        OnGoingGame = false;
+
+        yield return StartCoroutine(WaitForSeconds(1.5f));
+
+        UIManager.UpdateGameSummaryWindow(true, TimeTaken, AmountOfMines, true);
+
+        yield return null;
+    }
+
+    public IEnumerator WaitForSeconds(float time)
+    {
+        yield return new WaitForSeconds(time);
     }
 }
