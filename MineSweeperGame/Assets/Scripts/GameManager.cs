@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameState {
@@ -10,13 +8,23 @@ public enum GameState {
 
 public class GameManager : MonoBehaviour
 {
-    public GameState CurrentGameState;
-
+    #region Variables
     [SerializeField] private LevelManager LevelManager;
 
+    #region Game State Variables
+    public GameState CurrentGameState;
+
+    [Space]
     public int RemainingFlags;
+
+    [Space]
     public int AmountOfMines;
+
+    [Space]
     public int RemainingTiles;
+    #endregion
+
+    #endregion
 
     void Update()
     {

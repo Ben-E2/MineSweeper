@@ -2,27 +2,27 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    #region Variables
     [SerializeField] private LevelManager LevelManager;
 
-    [Space]
-    [SerializeField] private float Zoom = 5f;
+    #region Zoom Variables
+    private float Zoom = 5f;
 
     private const float BaseZoomStep = 0.5f;
     private float ZoomStep;
 
     private const float MinZoom = 2f;
     private const float MaxZoom = 20f;
+    #endregion
 
-    [Space]
-    [SerializeField] private Vector3 LastMousePosition = Vector3.zero;
+    #region Pan Variables
+    private Vector3 LastMousePosition = Vector3.zero;
 
-    [SerializeField] private float BasePanSensitivity = 2f;
-    [SerializeField] private float PanSensitivity;
+    private float PanSensitivity;
+    #endregion
 
-    [Space]
     private Camera Camera;
-
-    
+    #endregion
 
     void Start()
     {

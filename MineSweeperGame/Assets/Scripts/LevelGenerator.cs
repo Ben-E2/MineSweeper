@@ -5,14 +5,18 @@ using UnityEngine.Tilemaps;
 
 public class LevelGenerator : MonoBehaviour
 {
+    #region Variables
     [SerializeField] private LevelManager LevelManager;
     [SerializeField] private GameManager GameManager;
 
+    #region Tilemaps
     [Space]
     [SerializeField] private Tilemap FlagTilemap;
     [SerializeField] private Tilemap MainTilemap;
     [SerializeField] private Tilemap UnderTilemap;
+    #endregion
 
+    #region Tile Assets
     [Space]
     [SerializeField] private TileBase CoverTileBase;
     [SerializeField] private TileBase MineTileBase;
@@ -26,6 +30,9 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private TileBase Num6TileBase;
     [SerializeField] private TileBase Num7TileBase;
     [SerializeField] private TileBase Num8TileBase;
+    #endregion
+
+    #endregion
 
     public IEnumerator CreateLevel()
     {

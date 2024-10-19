@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.WSA;
 
 public class TileData
 {
@@ -28,15 +26,20 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private LevelGenerator LevelGenerator;
     [SerializeField] private GameManager GameManager;
 
+    #region Tilemaps
     [Space]
     [SerializeField] private Tilemap FlagTilemap;
     [SerializeField] private Tilemap MainTilemap;
     [SerializeField] private Tilemap UnderTilemap;
+    #endregion
 
+    #region Tile Assets
     [Space]
     [SerializeField] private TileBase FlagTile;
     [SerializeField] private TileBase CoverTile;
+    #endregion
 
+    #region Level Information
     [Space]
     public BoundsInt LevelBounds;
     public Dictionary<Vector3Int, TileData> GridData  = new Dictionary<Vector3Int, TileData>();
@@ -44,6 +47,7 @@ public class LevelManager : MonoBehaviour
     [Space]
     [Range(0.1f, 0.9f)] public float MaxMinePercentage;
     [Range(0.01f, 0.1f)] public float MineSpawnChance;
+    #endregion
 
     #endregion
 

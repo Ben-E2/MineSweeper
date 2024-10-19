@@ -3,10 +3,15 @@ using UnityEngine.Tilemaps;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    #region Variables
     [SerializeField] private LevelManager LevelManager;
 
+    #region Tilemaps
     [Space]
     [SerializeField] private Tilemap MainTileMap;
+    #endregion
+
+    #endregion
 
     void Update()
     {
