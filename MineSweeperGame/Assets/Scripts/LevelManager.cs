@@ -96,7 +96,7 @@ public class LevelManager : MonoBehaviour
 
             FlagTilemap.SetTile(clickPosition, null);
         }
-        else if (!GridData[clickPosition].isFlagged && GameManager.RemainingFlags > 0)
+        else if (!GridData[clickPosition].isFlagged && !GridData[clickPosition].isRevealed && GameManager.RemainingFlags > 0)
         {
             GameManager.ChangeFlagAmount(-1);
 

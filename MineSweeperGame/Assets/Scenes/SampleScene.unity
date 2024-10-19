@@ -429,7 +429,7 @@ MonoBehaviour:
   CoverTile: {fileID: 11400000, guid: 35d2dc87af3f93d4d8dfa90e7ec5d7d8, type: 2}
   LevelBounds:
     m_Position: {x: 0, y: 0, z: 0}
-    m_Size: {x: 10, y: 10, z: 0}
+    m_Size: {x: 100, y: 100, z: 0}
   MaxMinePercentage: 0.1
   MineSpawnChance: 0.05
 --- !u!114 &893822578
@@ -488,6 +488,7 @@ MonoBehaviour:
   LevelManager: {fileID: 893822577}
   RemainingFlags: 0
   AmountOfMines: 0
+  RemainingTiles: 0
 --- !u!1 &1243455723
 GameObject:
   m_ObjectHideFlags: 0
