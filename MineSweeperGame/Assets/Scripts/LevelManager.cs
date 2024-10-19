@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.WSA;
 
 public class TileData
 {
@@ -65,15 +67,20 @@ public class LevelManager : MonoBehaviour
             Debug.LogWarning("Game over.");
 
             GameManager.CurrentGameState = GameState.GameLost;
+
+            return;
         }
 
         if (GridData[clickPosition].isRevealed == false)
         {
-            GridData[clickPosition].isRevealed = true;
-
-            GameManager.RemainingTiles -= 1;
-
-            MainTilemap.SetTile(clickPosition, null);
+            if (GridData[clickPosition].surroundingMines <= 0)
+            {
+                FloodFill(clickPosition);
+            }
+            else
+            {
+                RevealTile(clickPosition);
+            }
 
             GameManager.CheckIfGameWon();
         } 
@@ -97,6 +104,69 @@ public class LevelManager : MonoBehaviour
 
             FlagTilemap.SetTile(clickPosition, FlagTile);
         }
+    }
+
+    private void FloodFill(Vector3Int clickPosition)
+    {
+        List<Vector3Int> _directions = new List<Vector3Int>()
+        {
+            new Vector3Int (-1, 1, 0), // Top left
+            new Vector3Int (0, 1, 0), // Top middle
+            new Vector3Int (1, 1, 0), // Top right
+            new Vector3Int (1, 0, 0), // Middle right
+            new Vector3Int (1, -1, 0), // Bottom right
+            new Vector3Int (0, -1, 0), // Bottom middle
+            new Vector3Int (-1, -1, 0), // Bottom left
+            new Vector3Int (-1, 0, 0), // Middle left
+        };
+
+        List<Vector3Int> _tempFloodList = new List<Vector3Int>();
+        List<Vector3Int> _tempIngoreList = new List<Vector3Int>();
+
+        _tempFloodList.Add(clickPosition);
+
+        int _index = 0;
+        while (_index < _tempFloodList.Count) 
+        {
+            Vector3Int _tile = _tempFloodList[_index];
+
+            foreach (Vector3Int direction in _directions)
+            {
+                Vector3Int _currentTile = _tile + direction;
+
+                if (!GridData.ContainsKey(_currentTile) || GridData[_currentTile].isRevealed)
+                {
+                    continue;
+                }
+
+                if (GridData[_currentTile].surroundingMines == 0 && !_tempFloodList.Contains(_currentTile))
+                {
+                    _tempFloodList.Add(_currentTile);
+                }
+
+                else if (GridData[_currentTile].surroundingMines > 0 && !_tempIngoreList.Contains(_currentTile))
+                {
+                    _tempIngoreList.Add(_currentTile);
+                }
+
+                RevealTile(_currentTile);
+            }
+
+            _index++;
+        }
+    }
+
+    private void RevealTile(Vector3Int tile)
+    {
+        GridData[tile].isRevealed = true;
+
+        GameManager.RemainingTiles -= 1;
+
+        GridData[tile].isFlagged = false;
+
+        MainTilemap.SetTile(tile, null);
+
+        FlagTilemap.SetTile(tile, null);
     }
 
     private void OnDrawGizmos()
