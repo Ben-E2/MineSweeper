@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     #region Variables
     [SerializeField] private LevelManager LevelManager;
     [SerializeField] private UIManager UIManager;
+    [SerializeField] private TimerScript TimerScript;
 
     #region Game State Variables
     public GameState CurrentGameState;
@@ -28,9 +29,6 @@ public class GameManager : MonoBehaviour
 
     [Space]
     public int RemainingTiles;
-
-    [Space]
-    public float TimeTaken;
     #endregion
 
     #endregion
@@ -68,6 +66,10 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator OnGameLost()
     {
+        OnGoingGame = false;
+
+        TimerScript.ToggleTimer(false);
+
         MinesToReveal = new List<Vector3Int>();
 
         foreach (KeyValuePair<Vector3Int, TileData> tile in LevelManager.GridData)
@@ -86,11 +88,9 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(LevelManager.ShowMinePosition());
         }
 
-        OnGoingGame = false;
+        yield return StartCoroutine(WaitSeconds(1.5f));
 
-        yield return StartCoroutine(WaitForSeconds(1.5f));
-
-        UIManager.UpdateGameSummaryWindow(false, TimeTaken, AmountOfMines, true);
+        UIManager.UpdateGameSummaryWindow(false, AmountOfMines, true);
 
         yield return null;
     }
@@ -99,14 +99,16 @@ public class GameManager : MonoBehaviour
     {
         OnGoingGame = false;
 
-        yield return StartCoroutine(WaitForSeconds(1.5f));
+        TimerScript.ToggleTimer(false);
 
-        UIManager.UpdateGameSummaryWindow(true, TimeTaken, AmountOfMines, true);
+        yield return StartCoroutine(WaitSeconds(1.5f));
+
+        UIManager.UpdateGameSummaryWindow(true, AmountOfMines, true);
 
         yield return null;
     }
 
-    public IEnumerator WaitForSeconds(float time)
+    public IEnumerator WaitSeconds(float time)
     {
         yield return new WaitForSeconds(time);
     }

@@ -26,6 +26,7 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private LevelGenerator LevelGenerator;
     [SerializeField] private GameManager GameManager;
+    [SerializeField] private TimerScript TimerScript;
 
     #region Tilemaps
     [Space]
@@ -64,7 +65,9 @@ public class LevelManager : MonoBehaviour
 
         LevelArea = LevelBounds.size.x * LevelBounds.size.y;
 
-        GameManager.TimeTaken = 0f;
+        TimerScript.ClearTimer();
+
+        TimerScript.ToggleTimer(true);
     }
 
     public void OnTileM1Click(Vector3Int clickPosition)
